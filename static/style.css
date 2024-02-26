@@ -1,0 +1,83 @@
+/* Global styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1a1a1a;
+    color: #e6e6e6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #333;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Header styles */
+h1 {
+    color: #007bff;
+    text-align: center;
+}
+
+/* Form styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.custom-file-label::after {
+    content: 'Choose file';
+}
+
+/* Button styles */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Output styles */
+#output {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #444;
+    color: #e6e6e6;
+}
+
+.message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.user-message {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.bot-message {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.error-message {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.image {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.image img {
+    margin-right: 10px;
+    border-radius: 5px;
+}
