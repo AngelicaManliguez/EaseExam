@@ -4,7 +4,7 @@ import fitz  # PyMuPDF
 import openai
 
 app = Flask(__name__)
-#tired
+
 # Set your OpenAI API key
 openai.api_key = "UPLOAD UNG API KEY HERE"
 
