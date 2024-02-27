@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Quiz Generator</title>
+    <title>EaseExam Application</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -13,7 +13,7 @@
 </head>
 <body>
   <div class="container mt-5">
-    <h1 style="color:white">Quiz Generator</h1>
+    <h1 style="color:white">EaseExam</h1>
     <div class="form-group mt-3">
         <textarea class="form-control" rows="5" placeholder="Enter the text with all the information needed for the quiz or exam" id="text-input"></textarea>
         <div class="custom-file">
@@ -21,7 +21,7 @@
             <label class="custom-file-label" for="file-input">Choose file...</label>
         </div>
     </div>
-    <button type="button" class="btn btn-primary" id="generate-quiz-btn">Generate Quiz</button>
+    <button type="button" class="btn btn-primary" id="generate-quiz-btn">Generate Questions</button>
     <div id="output"></div>
 </div>
 <script>
@@ -95,7 +95,7 @@
           console.error(error);
           const errorDiv = document.createElement("div");
           errorDiv.classList.add("message", "error-message");
-          errorDiv.innerHTML = "<p>Error: Failed to generate quiz.</p>";
+          errorDiv.innerHTML = "<p>Error: Failed to generate questions.</p>";
           outputDiv.appendChild(errorDiv);
       });
   }

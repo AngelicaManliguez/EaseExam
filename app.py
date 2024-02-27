@@ -6,7 +6,7 @@ import openai
 app = Flask(__name__)
 
 # Set your OpenAI API key
-openai.api_key = "UPLOAD UNG API KEY HERE"
+openai.api_key = "API KEY"
 
 # Store the paths of uploaded files
 uploaded_files = {}
