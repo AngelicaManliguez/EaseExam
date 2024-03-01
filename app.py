@@ -6,7 +6,7 @@ import openai
 app = Flask(__name__)
 
 # Set your OpenAI API key
-openai.api_key = "API KEY"
+openai.api_key = "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"
 
 # Store the paths of uploaded files
 uploaded_files = {}
@@ -51,14 +51,24 @@ def generate_quiz():
                 file.save(file_path)
                 saved_files.append(file_path)
 
+    # Read the content of uploaded files
+    file_texts = []
+    for file_path in saved_files:
+        with open(file_path, "r") as file:
+            file_texts.append(file.read())
+
     # Generate quiz questions using GPT-3.5 turbo
-    response = openai.Completion.create(
+    response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        prompt=text,
+        messages=[
+            {"role": "system", "content": "You are a student."},
+            {"role": "user", "content": text},
+            {"role": "user", "content": "\n".join(file_texts)},
+        ],
         max_tokens=100
     )
 
-    questions = response.choices[0].text.strip().split("\n")
+    questions = response["choices"][0]["message"]["content"].strip().split("\n")
 
     return jsonify({"questions": questions, "saved_files": saved_files})
 
