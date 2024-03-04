@@ -40,6 +40,7 @@ def upload_file():
 @app.route("/api/generate_quiz", methods=["POST"])
 def generate_quiz():
     text = request.form.get("text")
+    quiz_type = request.form.get("quiz_type")
     files = request.files.to_dict(flat=False)
 
     # Save files to txt in static/uploads folder
@@ -64,6 +65,7 @@ def generate_quiz():
             {"role": "system", "content": "You are a student."},
             {"role": "user", "content": text},
             {"role": "user", "content": "\n".join(file_texts)},
+            {"role": "system", "content": f"Generate {quiz_type} quiz questions."},
         ],
         max_tokens=100
     )

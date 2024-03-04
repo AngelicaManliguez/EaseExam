@@ -21,7 +21,9 @@
             <label class="custom-file-label" for="file-input">Choose file...</label>
         </div>
     </div>
-    <button type="button" class="btn btn-primary" id="generate-quiz-btn">Generate Questions</button>
+    <button type="button" class="btn btn-primary" id="multiple-choice-btn">Multiple Choice</button>
+    <button type="button" class="btn btn-primary" id="true-false-btn">True or False</button>
+    <button type="button" class="btn btn-primary" id="generate-quiz-btn" style="display: none;">Generate Questions</button>
     <div id="output"></div>
 </div>
 <script>
@@ -32,6 +34,17 @@
       }
       document.querySelector('.custom-file-label').textContent = fileNames.join(', ');
   });
+
+  document.getElementById('multiple-choice-btn').addEventListener('click', function (e) {
+      document.getElementById('generate-quiz-btn').style.display = 'block';
+      document.getElementById('generate-quiz-btn').setAttribute('data-quiz-type', 'Multiple Choice');
+  });
+
+  document.getElementById('true-false-btn').addEventListener('click', function (e) {
+      document.getElementById('generate-quiz-btn').style.display = 'block';
+      document.getElementById('generate-quiz-btn').setAttribute('data-quiz-type', 'True or False');
+  });
+
   function generateQuiz() {
       const textInput = document.querySelector("#text-input");
       const fileInput = document.querySelector("#file-input");
@@ -39,6 +52,7 @@
 
       const formData = new FormData();
       formData.append("text", textInput.value);
+      formData.append("quiz_type", document.getElementById('generate-quiz-btn').getAttribute('data-quiz-type'));
       for (let i = 0; i < fileInput.files.length; i++) {
           formData.append("file" + i, fileInput.files[i]);
       }
