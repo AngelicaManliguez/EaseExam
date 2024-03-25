@@ -47,7 +47,7 @@ def generate_quiz():
                 {"role": "user", "content": "\n".join(file_texts)},
                 {"role": "system", "content": f"Generate {quiz_type} quiz questions."},
             ],
-            max_tokens=100
+            max_tokens=4096
         )
 
         questions = response["choices"][0]["message"]["content"].strip().split("\n")

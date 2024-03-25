@@ -18,7 +18,7 @@
     </style>
 </head>
 <body>
-  <div class="container mt-5">
+<div class="container mt-5">
     <h1 style="color:white">EaseExam</h1>
     <div class="form-group mt-3">
         <textarea class="form-control" rows="5" placeholder="Enter the text with all the information needed for the quiz or exam" id="text-input"></textarea>
@@ -27,96 +27,104 @@
             <label class="custom-file-label" for="file-input">Choose file...</label>
         </div>
     </div>
+    <!-- Buttons -->
+    <button type="button" class="btn btn-primary" id="remove-files-btn" style="display: none;" onclick="removeFiles()">Remove Files</button>
     <button type="button" class="btn btn-primary" id="multiple-choice-btn" onclick="selectQuizType('Multiple Choice')">Multiple Choice</button>
     <button type="button" class="btn btn-primary" id="true-false-btn" onclick="selectQuizType('True or False')">True or False</button>
+    <button type="button" class="btn btn-primary" id="clear-text-btn" onclick="clearText()">Clear Text</button>
     <button type="button" class="btn btn-primary" id="generate-quiz-btn" style="display: none;">Generate Questions</button>
     <div id="output"></div>
 </div>
 <script>
-  document.getElementById('file-input').addEventListener('change', function (e) {
-      var fileNames = [];
-      for (var i = 0; i < this.files.length; i++) {
-          fileNames.push(this.files[i].name);
-      }
-      document.querySelector('.custom-file-label').textContent = fileNames.join(', ');
-  });
+    document.getElementById('file-input').addEventListener('change', function (e) {
+        var fileNames = [];
+        for (var i = 0; i < this.files.length; i++) {
+            fileNames.push(this.files[i].name);
+        }
+        document.querySelector('.custom-file-label').textContent = fileNames.join(', ');
+        document.getElementById('remove-files-btn').style.display = 'block'; // Show the remove files button
+    });
 
-  function selectQuizType(quizType) {
-      // Remove the class from all buttons
-      document.getElementById('multiple-choice-btn').classList.remove('btn-selected');
-      document.getElementById('true-false-btn').classList.remove('btn-selected');
-      
-      // Add the class to the selected button
-      if (quizType === 'Multiple Choice') {
-          document.getElementById('multiple-choice-btn').classList.add('btn-selected');
-      } else if (quizType === 'True or False') {
-          document.getElementById('true-false-btn').classList.add('btn-selected');
-      }
+    function removeFiles() {
+        const fileInput = document.querySelector("#file-input");
+        fileInput.value = ""; // Clear the file input
+        document.querySelector('.custom-file-label').textContent = "Choose file..."; // Reset the file input label
+        document.getElementById('remove-files-btn').style.display = 'none'; // Hide the remove files button
+    }
 
-      document.getElementById('generate-quiz-btn').style.display = 'block';
-      document.getElementById('generate-quiz-btn').setAttribute('data-quiz-type', quizType);
-  }
+    function clearText() {
+        document.querySelector("#text-input").value = ""; // Clear the text input
+    }
 
-  function generateQuiz() {
-      const textInput = document.querySelector("#text-input");
-      const fileInput = document.querySelector("#file-input");
-      const outputDiv = document.querySelector("#output");
+    function selectQuizType(quizType) {
+        // Remove the class from all buttons
+        document.getElementById('multiple-choice-btn').classList.remove('btn-selected');
+        document.getElementById('true-false-btn').classList.remove('btn-selected');
 
-      const formData = new FormData();
-      formData.append("text", textInput.value);
-      formData.append("quiz_type", document.getElementById('generate-quiz-btn').getAttribute('data-quiz-type'));
-      for (let i = 0; i < fileInput.files.length; i++) {
-          formData.append("file" + i, fileInput.files[i]);
-      }
+        // Add the class to the selected button
+        if (quizType === 'Multiple Choice') {
+            document.getElementById('multiple-choice-btn').classList.add('btn-selected');
+        } else if (quizType === 'True or False') {
+            document.getElementById('true-false-btn').classList.add('btn-selected');
+        }
 
-      fetch("/api/generate_quiz", {
-          method: "POST",
-          body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-          outputDiv.innerHTML = ""; // Clear previous output
+        document.getElementById('generate-quiz-btn').style.display = 'block';
+        document.getElementById('generate-quiz-btn').setAttribute('data-quiz-type', quizType);
+    }
 
-          // Show user input image and text
-          const userInputDiv = document.createElement("div");
-          userInputDiv.classList.add("message", "user-message", "image");
-          userInputDiv.innerHTML = `
-              <img src="{{ url_for('static', filename='images/user.png') }}" alt="User Input Image" style="width: 100px; height: 100px;">
-              <p>User Input:</p>
-              <p>${textInput.value}</p>
-          `;
-          outputDiv.appendChild(userInputDiv);
+    function generateQuiz() {
+    const textInput = document.querySelector("#text-input");
+    const fileInput = document.querySelector("#file-input");
+    const outputDiv = document.querySelector("#output");
+    const quizType = document.getElementById('generate-quiz-btn').getAttribute('data-quiz-type'); // Get the quiz type
 
-          // Show GPT image and generated questions
-          if (data.questions) {
-              const gptMessageDiv = document.createElement("div");
-              gptMessageDiv.classList.add("message", "bot-message", "image");
-              gptMessageDiv.innerHTML = `
-                  <img src="{{ url_for('static', filename='images/gpt.jpg') }}" alt="GPT Image" style="width: 100px; height: 100px;">
-                  <p>Generated Questions:</p>
-              `;
-              data.questions.forEach(question => {
-                  gptMessageDiv.innerHTML += "<p>" + question + "</p>";
-              });
-              outputDiv.appendChild(gptMessageDiv);
-          } else if (data.error) {
-              const errorDiv = document.createElement("div");
-              errorDiv.classList.add("message", "error-message");
-              errorDiv.innerHTML = "<p>Error: " + data.error + "</p>";
-              outputDiv.appendChild(errorDiv);
-          }
-      })
-      .catch(error => {
-          console.error(error);
-          const errorDiv = document.createElement("div");
-          errorDiv.classList.add("message", "error-message");
-          errorDiv.innerHTML = "<p>Error: Failed to generate questions.</p>";
-          outputDiv.appendChild(errorDiv);
-      });
-  }
+    const formData = new FormData();
+    formData.append("text", textInput.value);
+    formData.append("quiz_type", quizType); // Pass the quiz type to the API request
+    for (let i = 0; i < fileInput.files.length; i++) {
+        formData.append("files[]", fileInput.files[i]); // Use "files[]" as key to handle multiple files
+    }
 
-  const generateQuizBtn = document.querySelector("#generate-quiz-btn");
-  generateQuizBtn.addEventListener("click", generateQuiz);
+    fetch("/api/generate_quiz", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        outputDiv.innerHTML = ""; // Clear previous output
+
+        // Show GPT image and generated questions
+        if (data.questions) {
+            const gptMessageDiv = document.createElement("div");
+            gptMessageDiv.classList.add("message", "bot-message", "image");
+            gptMessageDiv.innerHTML = `
+                <img src="{{ url_for('static', filename='images/gpt.jpg') }}" alt="GPT Image" style="width: 100px; height: 100px;">
+                <p>Generated Questions:</p>
+            `;
+            const questionsDiv = document.createElement("div"); // Create a div for all questions
+            questionsDiv.innerHTML = "<p>" + data.questions.join("<br>") + "</p>"; // Join all questions into a single string
+            gptMessageDiv.appendChild(questionsDiv); // Append the div for all questions to the main message div
+            outputDiv.appendChild(gptMessageDiv);
+        } else if (data.error) {
+            const errorDiv = document.createElement("div");
+            errorDiv.classList.add("message", "error-message");
+            errorDiv.innerHTML = "<p>Error: " + data.error + "</p>";
+            outputDiv.appendChild(errorDiv);
+        }
+
+    })
+    .catch(error => {
+        console.error(error);
+        const errorDiv = document.createElement("div");
+        errorDiv.classList.add("message", "error-message");
+        errorDiv.innerHTML = "<p>Error: Failed to generate questions.</p>";
+        outputDiv.appendChild(errorDiv);
+    });
+}
+
+const generateQuizBtn = document.querySelector("#generate-quiz-btn");
+generateQuizBtn.addEventListener("click", generateQuiz);
+
 </script>
 
 </body>
