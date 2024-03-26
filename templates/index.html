@@ -27,6 +27,12 @@
             <label class="custom-file-label" for="file-input">Choose file...</label>
         </div>
     </div>
+    <!-- Number of questions input -->
+    <div class="form-group mt-3">
+        <label for="num-questions">Number of Questions (1-10):</label>
+        <input type="number" class="form-control" id="num-questions" min="1" max="10" value="5">
+    </div>
+
     <!-- Buttons -->
     <button type="button" class="btn btn-primary" id="remove-files-btn" style="display: none;" onclick="removeFiles()">Remove Files</button>
     <button type="button" class="btn btn-primary" id="multiple-choice-btn" onclick="selectQuizType('Multiple Choice')">Multiple Choice</button>
@@ -72,17 +78,36 @@
         document.getElementById('generate-quiz-btn').setAttribute('data-quiz-type', quizType);
     }
 
-    function generateQuiz() {
+    let isGenerating = false; // Flag to track if a question is being generated
+
+function generateQuiz() {
+    if (isGenerating) {
+        alert("Please wait 5 seconds before generating another question.");
+        return;
+    }
+
+    // Set the flag to true
+    isGenerating = true;
+
     const textInput = document.querySelector("#text-input");
     const fileInput = document.querySelector("#file-input");
     const outputDiv = document.querySelector("#output");
-    const quizType = document.getElementById('generate-quiz-btn').getAttribute('data-quiz-type'); // Get the quiz type
+    const quizType = document.getElementById('generate-quiz-btn').getAttribute('data-quiz-type');
+    const numQuestions = document.getElementById('num-questions').value; // Get the number of questions
+
+    // Validate the number of questions
+    if (numQuestions < 1 || numQuestions > 10) {
+        alert("Number of questions must be between 1 and 10.");
+        isGenerating = false; // Reset the flag
+        return;
+    }
 
     const formData = new FormData();
     formData.append("text", textInput.value);
-    formData.append("quiz_type", quizType); // Pass the quiz type to the API request
+    formData.append("quiz_type", quizType);
+    formData.append("num_questions", numQuestions); // Pass the number of questions to the API request
     for (let i = 0; i < fileInput.files.length; i++) {
-        formData.append("files[]", fileInput.files[i]); // Use "files[]" as key to handle multiple files
+        formData.append("files[]", fileInput.files[i]);
     }
 
     fetch("/api/generate_quiz", {
@@ -114,6 +139,11 @@
             outputDiv.appendChild(errorDiv);
         }
 
+        // Reset the flag after 5 seconds
+        setTimeout(() => {
+            isGenerating = false;
+        }, 5000);
+
     })
     .catch(error => {
         console.error(error);
@@ -121,6 +151,9 @@
         errorDiv.classList.add("message", "error-message");
         errorDiv.innerHTML = "<p>Error: Failed to generate questions and answers.</p>";
         outputDiv.appendChild(errorDiv);
+
+        // Reset the flag
+        isGenerating = false;
     });
 }
 

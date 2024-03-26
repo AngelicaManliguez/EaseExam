@@ -16,6 +16,7 @@ def index():
 def generate_quiz():
     text_input = request.form.get("text")
     quiz_type = request.form.get("quiz_type")
+    num_questions = int(request.form.get("num_questions"))
     files = request.files.to_dict(flat=False)
 
     # Read the content of uploaded files
@@ -45,7 +46,7 @@ def generate_quiz():
                 {"role": "system", "content": "You are a student."},
                 {"role": "user", "content": text_input},
                 {"role": "user", "content": "\n".join(file_contents)},
-                {"role": "system", "content": f"Generate {quiz_type} quiz questions and answers."},
+                {"role": "system", "content": f"Generate {quiz_type} quiz questions and answers for {num_questions} questions."},
             ],
             max_tokens=4096
         )
