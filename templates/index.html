@@ -93,18 +93,20 @@
     .then(data => {
         outputDiv.innerHTML = ""; // Clear previous output
 
-        // Show GPT image and generated questions
-        if (data.questions) {
-            const gptMessageDiv = document.createElement("div");
-            gptMessageDiv.classList.add("message", "bot-message", "image");
-            gptMessageDiv.innerHTML = `
-                <img src="{{ url_for('static', filename='images/gpt.jpg') }}" alt="GPT Image" style="width: 100px; height: 100px;">
-                <p>Generated Questions:</p>
-            `;
-            const questionsDiv = document.createElement("div"); // Create a div for all questions
-            questionsDiv.innerHTML = "<p>" + data.questions.join("<br>") + "</p>"; // Join all questions into a single string
-            gptMessageDiv.appendChild(questionsDiv); // Append the div for all questions to the main message div
-            outputDiv.appendChild(gptMessageDiv);
+        // Show generated questions with correct answers
+        if (data.questions_with_answers) {
+            const questionsWithAnswersDiv = document.createElement("div");
+            questionsWithAnswersDiv.classList.add("questions-with-answers");
+
+            const questionsWithAnswers = data.questions_with_answers.split("\n");
+            questionsWithAnswers.forEach(question => {
+                const questionDiv = document.createElement("div");
+                questionDiv.classList.add("question");
+                questionDiv.innerText = question;
+                questionsWithAnswersDiv.appendChild(questionDiv);
+            });
+
+            outputDiv.appendChild(questionsWithAnswersDiv);
         } else if (data.error) {
             const errorDiv = document.createElement("div");
             errorDiv.classList.add("message", "error-message");
@@ -117,7 +119,7 @@
         console.error(error);
         const errorDiv = document.createElement("div");
         errorDiv.classList.add("message", "error-message");
-        errorDiv.innerHTML = "<p>Error: Failed to generate questions.</p>";
+        errorDiv.innerHTML = "<p>Error: Failed to generate questions and answers.</p>";
         outputDiv.appendChild(errorDiv);
     });
 }

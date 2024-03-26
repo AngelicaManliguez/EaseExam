@@ -37,7 +37,7 @@ def generate_quiz():
                     text += para.text
                 file_contents.append(text)
 
-    # Generate quiz questions using GPT-3.5 turbo
+    # Generate quiz questions and answers using GPT-3.5 turbo
     try:
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
@@ -45,18 +45,18 @@ def generate_quiz():
                 {"role": "system", "content": "You are a student."},
                 {"role": "user", "content": text_input},
                 {"role": "user", "content": "\n".join(file_contents)},
-                {"role": "system", "content": f"Generate {quiz_type} quiz questions."},
+                {"role": "system", "content": f"Generate {quiz_type} quiz questions and answers."},
             ],
             max_tokens=4096
         )
 
-        questions = response["choices"][0]["message"]["content"].strip().split("\n")
+        questions_with_answers = response["choices"][0]["message"]["content"].strip()
 
-        return jsonify({"questions": questions})
+        return jsonify({"questions_with_answers": questions_with_answers})
     except Exception as e:
         # Log the exception for debugging
-        app.logger.error("Failed to generate questions: %s", str(e))
-        return jsonify({"error": "Failed to generate questions. Please try again."})
+        app.logger.error("Failed to generate questions and answers: %s", str(e))
+        return jsonify({"error": "Failed to generate questions and answers. Please try again."})
 
 if __name__ == '__main__':
     app.run(debug=True)
