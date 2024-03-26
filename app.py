@@ -14,12 +14,12 @@ def index():
 
 @app.route("/api/generate_quiz", methods=["POST"])
 def generate_quiz():
-    text = request.form.get("text")
+    text_input = request.form.get("text")
     quiz_type = request.form.get("quiz_type")
     files = request.files.to_dict(flat=False)
 
     # Read the content of uploaded files
-    file_texts = []
+    file_contents = []
     for key, file_list in files.items():
         for file in file_list:
             if file.filename.endswith(".pdf"):
@@ -27,15 +27,15 @@ def generate_quiz():
                 text = ""
                 for page_num in range(len(pdf_file.pages)):
                     text += pdf_file.pages[page_num].extract_text()
-                file_texts.append(text)
+                file_contents.append(text)
             elif file.filename.endswith(".txt"):
-                file_texts.append(file.read().decode("utf-8"))
+                file_contents.append(file.read().decode("utf-8"))
             elif file.filename.endswith(".docx"):
                 doc = Document(file)
                 text = ""
                 for para in doc.paragraphs:
                     text += para.text
-                file_texts.append(text)
+                file_contents.append(text)
 
     # Generate quiz questions using GPT-3.5 turbo
     try:
@@ -43,8 +43,8 @@ def generate_quiz():
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a student."},
-                {"role": "user", "content": text},
-                {"role": "user", "content": "\n".join(file_texts)},
+                {"role": "user", "content": text_input},
+                {"role": "user", "content": "\n".join(file_contents)},
                 {"role": "system", "content": f"Generate {quiz_type} quiz questions."},
             ],
             max_tokens=4096
