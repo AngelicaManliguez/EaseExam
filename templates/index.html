@@ -181,11 +181,16 @@
 
     let isGenerating = false; // Flag to track if a question is being generated
 
-    function generateQuiz() {
-    if (isGenerating) {
-        alert("Please wait 5 seconds before generating another question.");
-        return;
+    function isMeaningfulText(text) {
+        // Check if the text is too short or contains only non-alphanumeric characters
+        return text.trim().length > 10 && /[a-zA-Z0-9]/.test(text);
     }
+
+    function generateQuiz() {
+        if (isGenerating) {
+            alert("Please wait 5 seconds before generating another question.");
+            return;
+        }
 
     const quizType = document.getElementById('generate-quiz-btn').getAttribute('data-quiz-type');
 
@@ -220,6 +225,14 @@
     formData.append("num_questions", numQuestions); // Pass the number of questions to the API request
     for (let i = 0; i < fileInput.files.length; i++) {
         formData.append("files[]", fileInput.files[i]);
+    }
+
+    // Check if the text is meaningful before generating questions
+    if (!isMeaningfulText(textInput.value) && fileInput.files.length === 0) {
+        alert("Please enter some meaningful text or upload a file.");
+        isGenerating = false; // Reset the flag
+        document.getElementById('loading-spinner').style.display = 'none'; // Hide the loading spinner
+        return;
     }
 
     fetch("/api/generate_quiz", {

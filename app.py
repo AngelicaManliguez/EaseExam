@@ -22,6 +22,10 @@ def generate_questions_from_docx(docx_file):
     for para in doc.paragraphs:
         yield para.text
 
+def is_meaningful_text(text):
+    # Check if the text is too short or contains only non-alphanumeric characters
+    return text.strip() and len(text.strip()) > 10 and any(char.isalnum() for char in text)
+
 @app.route("/api/generate_quiz", methods=["POST"])
 def generate_quiz():
     text_input = request.form.get("text")
@@ -40,7 +44,10 @@ def generate_quiz():
 
     messages = [{"role": "system", "content": "You are a student."}]
     if text_input:
-        messages.append({"role": "user", "content": text_input})
+        if is_meaningful_text(text_input):
+            messages.append({"role": "user", "content": text_input})
+        else:
+            return jsonify({"error": "Please enter some meaningful text."})
 
     allowed_extensions = (".docx", ".pdf")
     files = request.files.getlist("files[]")
@@ -51,9 +58,14 @@ def generate_quiz():
             return jsonify({"error": f"Invalid file type. Please upload only {', '.join(allowed_extensions)} files."})
 
         if file.filename.endswith(".pdf"):
-            combined_text += "\n".join(generate_questions_from_pdf(file))
+            text = "\n".join(generate_questions_from_pdf(file))
         elif file.filename.endswith(".docx"):
-            combined_text += "\n".join(generate_questions_from_docx(file))
+            text = "\n".join(generate_questions_from_docx(file))
+
+        if is_meaningful_text(text):
+            combined_text += "\n" + text
+        else:
+            return jsonify({"error": "Please upload files with meaningful text."})
 
     if text_input:
         combined_text += "\n" + text_input
