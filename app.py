@@ -30,10 +30,21 @@ def generate_questions_from_docx(docx_file):
 def generate_quiz():
     text_input = request.form.get("text")
     quiz_type = request.form.get("quiz_type")
-    num_questions = int(request.form.get("num_questions"))
+    num_questions = request.form.get("num_questions")
+
+    # Check if both text_input and files are empty
+    if not text_input and "files[]" not in request.files:
+        return jsonify({"error": "Text input or file upload is required. Please enter some text or upload a file."})
+
+    # Check if num_questions is empty or None
+    if not num_questions:
+        return jsonify({"error": "Number of questions is required. Please enter a valid number."})
+
+    num_questions = int(num_questions)
 
     # Calculate the total token count of the messages
-    total_tokens = len(text_input.split()) + sum(len(file.read().split()) for file in request.files.getlist("files[]"))
+    total_tokens = len(text_input.split()) if text_input else 0
+    total_tokens += sum(len(file.read().split()) for file in request.files.getlist("files[]")) if "files[]" in request.files else 0
 
     # Check if the total token count exceeds the maximum context length
     if total_tokens > 16383:
@@ -43,8 +54,10 @@ def generate_quiz():
     try:
         messages = [
             {"role": "system", "content": "You are a student."},
-            {"role": "user", "content": text_input},
         ]
+
+        if text_input:
+            messages.append({"role": "user", "content": text_input})
 
         for file in request.files.getlist("files[]"):
             if file.filename.endswith(".pdf"):
