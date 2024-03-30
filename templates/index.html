@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EaseExam Application</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -22,37 +22,126 @@
             margin-top: 20px;
         }
     </style>
+    <link rel="icon" href="static/img/exam.png">
+    <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto Flex' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="container mt-5">
-    <h1 style="color:white">EaseExam</h1>
-    <div class="form-group mt-3">
-        <textarea class="form-control" rows="5" placeholder="Enter the text with all the information needed for the quiz or exam" id="text-input"></textarea>
-        <div class="custom-file">
-            <input type="file" class="custom-file-input" id="file-input" accept=".docx,.pdf" multiple>
-            <label class="custom-file-label" for="file-input">Choose file...</label>
-        </div>
-    </div>
-    <!-- Number of questions input -->
-    <div class="form-group mt-3">
-        <label for="num-questions">Number of Questions (1-10):</label>
-        <input type="number" class="form-control" id="num-questions" min="1" max="10" value="5">
+
+    <div class="navbar">
+        <a class="logo" href="#">
+            <img src="static/img/exam.png" alt="logo" class="logo-img">
+            <span class="logo-text">EaseExam</span>
+        </a>
+      
+        <ul class="page">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#generator">Generator</a></li>
+            <li><a href="#about">About Us</a></li>
+        </ul>
     </div>
 
-    <!-- Buttons -->
-    <button type="button" class="btn btn-primary" id="remove-files-btn" style="display: none;" onclick="removeFiles()">Remove Files</button>
-    <button type="button" class="btn btn-primary" id="multiple-choice-btn" onclick="selectQuizType('Multiple Choice')">Multiple Choice</button>
-    <button type="button" class="btn btn-primary" id="true-false-btn" onclick="selectQuizType('True or False')">True or False</button>
-    <button type="button" class="btn btn-primary" id="clear-text-btn" onclick="clearText()">Clear Text</button>
-    <button type="button" class="btn btn-primary" id="generate-quiz-btn" style="display: none;">Generate Questions</button>
-    <div id="loading-spinner">
-        <div class="spinner-border text-primary" role="status">
-            <span class="sr-only">Loading...</span>
+    <section class="home">
+        <a name="home"></a>
+            <div class="content">
+                <img src="static/img/icon.png" alt="image" class="right-image"> 
+                <h1>EaseExam</h1>
+                    <p>EaseExam is a platform designed to simplify the
+                        creation of exam questions from lecture materials. It
+                        allows professors to upload files and use advanced
+                        algorithms to generate questions based on key
+                        concepts and information. The platform also
+                        incorporates artificial intelligence technology, allowing
+                        users to interact with the system via natural language
+                        commands. This allows professors to focus on teaching
+                        and facilitating learning experiences for their students,
+                        revolutionizing exam preparation.</p>
+            </div>
+    </section>
+    
+    <a name="generator"></a>
+    <section class="generator">
+       
+       
+        <div class="content-area">
+            <div class="text-area-div">
+                <textarea class="text-area" id="text-input" type = "text" placeholder="Enter the text with all the information needed for the quiz or exam!"></textarea>
+                <button type="button" class="bt-clear" id="clear-text-btn" onclick="clearText()">Clear Text</button>
+            </div>
+
+            <div class="choose-file-div">
+                <input type="file" class="custom-file-input" id="file-input" multiple>
+                <label class="custom-file-label" for="file-input">Choose file...</label>
+                <button type="button" class="bt-remove" id="remove-files-btn" onclick="removeFiles()">Remove File</button>
+            </div>
+
+            <div class="num-questions-div">
+                <input type="number" class="num-questions" id="questions-content" min="1" max="10" value="5" placeholder="Number of Questions (1-10)"></textarea>
+                <button type="button" class="bt-multiple" id="multiple-choice-btn" onclick="selectQuizType('Multiple Choice')">Multiple Choices</button>
+                <button type="button" class="bt-tf" id="true-false-btn" onclick="selectQuizType('True or False')">True or False</button>
+            </div>
+
+            <button type="button" class="bt-generate" id="generate-quiz-btn">Generate!</button>
+
+            <div id="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i> Loading...
+            </div>
+
+            <h1>OUTPUT</h1>
+            <div class="output-div">
+                <!-- pwede mo to i-div tinext area ko lang para makita layout, may option din na nakatext area tapos disabled mo nalang para hindi makapagtype -->
+                <div class="output" id="output" placeholder="Output Here!" disabled></div>
+            </div>
+        </div>       
+    </section>
+    
+    <section class="about">
+        <a name = "about"></a>
+        <h1>WE ARE ACIM</h1>
+        <div class="container-about">
+            <h2>About Us</h2>
+            <p>New Era University's tech team consists of Noriel Achero, a versatile front end and back-end developer, Aeron
+                Red Celajes, a master of back-end development, Samantha Pauline Ines, a creative Ul designer, and Angelica
+                Mae Manliguez, a front-end developer. Noriel bridges the gap between user interface design and server-side
+                functionality, while Aeron focuses on building robust and scalable systems. Samantha's artistic flair and
+                technical acumen create visually stunning interfaces, while Angelica's proficiency in HTML, CSS, and JavaScript
+                transforms design concepts into interactive web experiences. Together, they form a powerful team that drives
+                digital transformation and pushes the boundaries of web development.</p>
         </div>
-        <p>Loading...</p>
-    </div>
-    <div id="output"></div>
-</div>
+
+        <div class="container-pic">
+            <div class="person">
+                <img src="static/img/noy.png" alt="noy">
+                <p>Noriel Achero</p>
+                <p1>Front-end & Back-end Developer</p1>
+            </div>
+            <div class="person">
+                <img src="static/img/red.png" alt="noy">
+                <p>Aeron Red Celajes</p>
+                <p1>Back-end Developer</p1>
+            </div>
+            <div class="person">
+                <img src="static/img/sam.png" alt="noy">
+                <p>Samantha Ines</p>
+                <p1>UI Designer & Front-end Developer</p1>
+            </div>
+            <div class="person">
+                <img src="static/img/angelica.png" alt="noy">
+                <p>Angelica Mae Manliguez</p>
+                <p1>Front-end Developer</p1>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        </br>
+        </br>
+        3-BSCS-2 | ACIM | &copy; 2024
+    </footer>
+
 <script>
     document.getElementById('file-input').addEventListener('change', function (e) {
         var fileNames = [];
@@ -98,6 +187,14 @@
         return;
     }
 
+    const quizType = document.getElementById('generate-quiz-btn').getAttribute('data-quiz-type');
+
+    // Check if quizType is not set
+    if (!quizType) {
+        alert("Please select a quiz type (Multiple Choice or True or False) before generating.");
+        return;
+    }
+
     // Show the loading spinner
     document.getElementById('loading-spinner').style.display = 'block';
 
@@ -107,8 +204,7 @@
     const textInput = document.querySelector("#text-input");
     const fileInput = document.querySelector("#file-input");
     const outputDiv = document.querySelector("#output");
-    const quizType = document.getElementById('generate-quiz-btn').getAttribute('data-quiz-type');
-    const numQuestions = document.getElementById('num-questions').value; // Get the number of questions
+    const numQuestions = document.getElementById('questions-content').value; // Get the number of questions
 
     // Validate the number of questions
     if (numQuestions < 1 || numQuestions > 10) {
@@ -150,13 +246,16 @@
             questionsWithAnswers.forEach(question => {
                 const questionDiv = document.createElement("div");
                 questionDiv.classList.add("question");
-                questionDiv.innerText = question;
+                questionDiv.innerHTML = question + "<br>"; // Add a break line after each question and answer pair
                 questionsDiv.appendChild(questionDiv);
             });
 
             // Append the questions to the outputDiv
             outputDiv.appendChild(questionsDiv);
         } else if (data.error) {
+            // Clear previous output if there is an error
+            outputDiv.innerHTML = "";
+
             // Show error message
             const errorDiv = document.createElement("div");
             errorDiv.classList.add("message", "error-message");
@@ -184,8 +283,9 @@
         isGenerating = false;
     });
 }
-    const generateQuizBtn = document.querySelector("#generate-quiz-btn");
-    generateQuizBtn.addEventListener("click", generateQuiz);
+
+const generateQuizBtn = document.querySelector("#generate-quiz-btn");
+generateQuizBtn.addEventListener("click", generateQuiz);
 
 </script>
 
