@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, Response
+from flask import Flask, render_template, request, jsonify
 from PyPDF2 import PdfReader
 from docx import Document
 import openai
@@ -17,10 +17,6 @@ def generate_questions_from_pdf(pdf_file):
     for page_num in range(len(pdf_reader.pages)):
         yield pdf_reader.pages[page_num].extract_text()
 
-def generate_questions_from_text_file(text_file):
-    for line in text_file:
-        yield line
-
 def generate_questions_from_docx(docx_file):
     doc = Document(docx_file)
     for para in doc.paragraphs:
@@ -32,7 +28,7 @@ def generate_quiz():
     quiz_type = request.form.get("quiz_type")
     num_questions = request.form.get("num_questions")
 
-    # Check if both text_input and files are empty
+    # Check if text_input is empty and no files are uploaded
     if not text_input and "files[]" not in request.files:
         return jsonify({"error": "Text input or file upload is required. Please enter some text or upload a file."})
 
@@ -42,33 +38,30 @@ def generate_quiz():
 
     num_questions = int(num_questions)
 
-    # Calculate the total token count of the messages
-    total_tokens = len(text_input.split()) if text_input else 0
-    total_tokens += sum(len(file.read().split()) for file in request.files.getlist("files[]")) if "files[]" in request.files else 0
+    messages = [{"role": "system", "content": "You are a student."}]
+    if text_input:
+        messages.append({"role": "user", "content": text_input})
 
-    # Check if the total token count exceeds the maximum context length
-    if total_tokens > 16383:
-        return jsonify({"error": f"Total token count exceeds the maximum context length. Current token count: {total_tokens}. Maximum allowed token count: 16383."})
+    allowed_extensions = (".docx", ".pdf")
+    files = request.files.getlist("files[]")
 
-    # Generate quiz questions and answers using GPT-3.5 turbo
+    combined_text = ""
+    for file in files:
+        if not file.filename.lower().endswith(allowed_extensions):
+            return jsonify({"error": f"Invalid file type. Please upload only {', '.join(allowed_extensions)} files."})
+
+        if file.filename.endswith(".pdf"):
+            combined_text += "\n".join(generate_questions_from_pdf(file))
+        elif file.filename.endswith(".docx"):
+            combined_text += "\n".join(generate_questions_from_docx(file))
+
+    if text_input:
+        combined_text += "\n" + text_input
+
+    messages.append({"role": "user", "content": combined_text})
+    messages.append({"role": "system", "content": f"Generate {quiz_type} quiz questions and answers for {num_questions} questions."})
+
     try:
-        messages = [
-            {"role": "system", "content": "You are a student."},
-        ]
-
-        if text_input:
-            messages.append({"role": "user", "content": text_input})
-
-        for file in request.files.getlist("files[]"):
-            if file.filename.endswith(".pdf"):
-                messages.extend({"role": "user", "content": page_text} for page_text in generate_questions_from_pdf(file))
-            elif file.filename.endswith(".txt"):
-                messages.extend({"role": "user", "content": line} for line in generate_questions_from_text_file(file))
-            elif file.filename.endswith(".docx"):
-                messages.extend({"role": "user", "content": para} for para in generate_questions_from_docx(file))
-
-        messages.append({"role": "system", "content": f"Generate {quiz_type} quiz questions and answers for {num_questions} questions."})
-
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=messages,
@@ -79,7 +72,6 @@ def generate_quiz():
 
         return jsonify({"questions_with_answers": questions_with_answers})
     except Exception as e:
-        # Log the exception for debugging
         app.logger.error("Failed to generate questions and answers: %s", str(e))
         return jsonify({"error": "Failed to generate questions and answers. Please try again."})
 

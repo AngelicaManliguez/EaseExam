@@ -15,6 +15,12 @@
             background-color: #ffc107 !important;
             border-color: #ffc107 !important;
         }
+
+        #loading-spinner {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -23,7 +29,7 @@
     <div class="form-group mt-3">
         <textarea class="form-control" rows="5" placeholder="Enter the text with all the information needed for the quiz or exam" id="text-input"></textarea>
         <div class="custom-file">
-            <input type="file" class="custom-file-input" id="file-input" multiple>
+            <input type="file" class="custom-file-input" id="file-input" accept=".docx,.pdf" multiple>
             <label class="custom-file-label" for="file-input">Choose file...</label>
         </div>
     </div>
@@ -39,6 +45,12 @@
     <button type="button" class="btn btn-primary" id="true-false-btn" onclick="selectQuizType('True or False')">True or False</button>
     <button type="button" class="btn btn-primary" id="clear-text-btn" onclick="clearText()">Clear Text</button>
     <button type="button" class="btn btn-primary" id="generate-quiz-btn" style="display: none;">Generate Questions</button>
+    <div id="loading-spinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <p>Loading...</p>
+    </div>
     <div id="output"></div>
 </div>
 <script>
@@ -80,11 +92,14 @@
 
     let isGenerating = false; // Flag to track if a question is being generated
 
-function generateQuiz() {
+    function generateQuiz() {
     if (isGenerating) {
         alert("Please wait 5 seconds before generating another question.");
         return;
     }
+
+    // Show the loading spinner
+    document.getElementById('loading-spinner').style.display = 'block';
 
     // Set the flag to true
     isGenerating = true;
@@ -99,6 +114,7 @@ function generateQuiz() {
     if (numQuestions < 1 || numQuestions > 10) {
         alert("Number of questions must be between 1 and 10.");
         isGenerating = false; // Reset the flag
+        document.getElementById('loading-spinner').style.display = 'none'; // Hide the loading spinner
         return;
     }
 
@@ -116,23 +132,32 @@ function generateQuiz() {
     })
     .then(response => response.json())
     .then(data => {
-        outputDiv.innerHTML = ""; // Clear previous output
+        // Hide the loading spinner
+        document.getElementById('loading-spinner').style.display = 'none';
 
-        // Show generated questions with correct answers
+        // Check if the API response contains questions_with_answers
         if (data.questions_with_answers) {
-            const questionsWithAnswersDiv = document.createElement("div");
-            questionsWithAnswersDiv.classList.add("questions-with-answers");
+            // Clear previous output
+            outputDiv.innerHTML = "";
 
+            // Split the questions_with_answers into an array of questions
             const questionsWithAnswers = data.questions_with_answers.split("\n");
+
+            // Create a div to hold the questions
+            const questionsDiv = document.createElement("div");
+
+            // Add each question to the div
             questionsWithAnswers.forEach(question => {
                 const questionDiv = document.createElement("div");
                 questionDiv.classList.add("question");
                 questionDiv.innerText = question;
-                questionsWithAnswersDiv.appendChild(questionDiv);
+                questionsDiv.appendChild(questionDiv);
             });
 
-            outputDiv.appendChild(questionsWithAnswersDiv);
+            // Append the questions to the outputDiv
+            outputDiv.appendChild(questionsDiv);
         } else if (data.error) {
+            // Show error message
             const errorDiv = document.createElement("div");
             errorDiv.classList.add("message", "error-message");
             errorDiv.innerHTML = "<p>Error: " + data.error + "</p>";
@@ -146,7 +171,10 @@ function generateQuiz() {
 
     })
     .catch(error => {
-        console.error(error);
+        // Hide the loading spinner on error
+        document.getElementById('loading-spinner').style.display = 'none';
+
+        // Show error message
         const errorDiv = document.createElement("div");
         errorDiv.classList.add("message", "error-message");
         errorDiv.innerHTML = "<p>Error: Failed to generate questions and answers.</p>";
@@ -156,9 +184,8 @@ function generateQuiz() {
         isGenerating = false;
     });
 }
-
-const generateQuizBtn = document.querySelector("#generate-quiz-btn");
-generateQuizBtn.addEventListener("click", generateQuiz);
+    const generateQuizBtn = document.querySelector("#generate-quiz-btn");
+    generateQuizBtn.addEventListener("click", generateQuiz);
 
 </script>
 
