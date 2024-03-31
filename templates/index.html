@@ -322,6 +322,9 @@
             errorDiv.innerHTML = "<p>Error: Failed to generate questions and answers.</p>";
             outputDiv.appendChild(errorDiv);
 
+            // Hide the copy button
+            document.querySelector('.bt-copy').style.display = 'none';
+
             // Reset the flag
             isGenerating = false;
         });
