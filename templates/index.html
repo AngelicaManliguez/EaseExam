@@ -21,6 +21,10 @@
             text-align: center;
             margin-top: 20px;
         }
+
+        .bt-copy {
+            display: none;
+        }
     </style>
     <link rel="icon" href="static/img/exam.png">
     <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet'>
@@ -62,7 +66,6 @@
             </div>
     </section>
     
-    <a name="generator"></a>
     <section class="generator">
        
        
@@ -92,9 +95,10 @@
 
             <h1>OUTPUT</h1>
             <div class="output-div">
-                <!-- pwede mo to i-div tinext area ko lang para makita layout, may option din na nakatext area tapos disabled mo nalang para hindi makapagtype -->
                 <div class="output" id="output" placeholder="Output Here!" disabled></div>
             </div>
+            <br>
+            <button class="bt-copy" onclick="copyToClipboard()">Copy Questions</button>
         </div>       
     </section>
     
@@ -137,8 +141,6 @@
     </section>
 
     <footer>
-        </br>
-        </br>
         3-BSCS-2 | ACIM | &copy; 2024
     </footer>
 
@@ -151,6 +153,31 @@
         document.querySelector('.custom-file-label').textContent = fileNames.join(', ');
         document.getElementById('remove-files-btn').style.display = 'block'; // Show the remove files button
     });
+
+    function copyToClipboard() {
+        /* Get the text content of the output div with line breaks */
+        const textToCopy = Array.from(document.querySelectorAll('.output .question'))
+            .map((question, index) => `${question.textContent.trim().replace('Answer:', 'Answer:')}`)
+            .join('\n');
+
+        /* Create a temporary textarea element to hold the text */
+        const textarea = document.createElement('textarea');
+        textarea.value = textToCopy;
+
+        /* Append the textarea to the body and select its contents */
+        document.body.appendChild(textarea);
+        textarea.select();
+
+        /* Copy the selected text to the clipboard */
+        document.execCommand('copy');
+
+        /* Remove the temporary textarea */
+        document.body.removeChild(textarea);
+
+        /* Alert the user that the text has been copied */
+        alert('Questions copied to clipboard!');
+    }
+
 
     function removeFiles() {
         const fileInput = document.querySelector("#file-input");
@@ -192,113 +219,116 @@
             return;
         }
 
-    const quizType = document.getElementById('generate-quiz-btn').getAttribute('data-quiz-type');
+        const quizType = document.getElementById('generate-quiz-btn').getAttribute('data-quiz-type');
 
-    // Check if quizType is not set
-    if (!quizType) {
-        alert("Please select a quiz type (Multiple Choice or True or False) before generating.");
-        return;
-    }
+        // Check if quizType is not set
+        if (!quizType) {
+            alert("Please select a quiz type (Multiple Choice or True or False) before generating.");
+            return;
+        }
 
-    // Show the loading spinner
-    document.getElementById('loading-spinner').style.display = 'block';
+        // Show the loading spinner
+        document.getElementById('loading-spinner').style.display = 'block';
 
-    // Set the flag to true
-    isGenerating = true;
+        // Set the flag to true
+        isGenerating = true;
 
-    const textInput = document.querySelector("#text-input");
-    const fileInput = document.querySelector("#file-input");
-    const outputDiv = document.querySelector("#output");
-    const numQuestions = document.getElementById('questions-content').value; // Get the number of questions
+        const textInput = document.querySelector("#text-input");
+        const fileInput = document.querySelector("#file-input");
+        const outputDiv = document.querySelector("#output");
+        const numQuestions = document.getElementById('questions-content').value; // Get the number of questions
 
-    // Validate the number of questions
-    if (numQuestions < 1 || numQuestions > 10) {
-        alert("Number of questions must be between 1 and 10.");
-        isGenerating = false; // Reset the flag
-        document.getElementById('loading-spinner').style.display = 'none'; // Hide the loading spinner
-        return;
-    }
+        // Validate the number of questions
+        if (numQuestions < 1 || numQuestions > 10) {
+            alert("Number of questions must be between 1 and 10.");
+            isGenerating = false; // Reset the flag
+            document.getElementById('loading-spinner').style.display = 'none'; // Hide the loading spinner
+            return;
+        }
 
-    const formData = new FormData();
-    formData.append("text", textInput.value);
-    formData.append("quiz_type", quizType);
-    formData.append("num_questions", numQuestions); // Pass the number of questions to the API request
-    for (let i = 0; i < fileInput.files.length; i++) {
-        formData.append("files[]", fileInput.files[i]);
-    }
+        const formData = new FormData();
+        formData.append("text", textInput.value);
+        formData.append("quiz_type", quizType);
+        formData.append("num_questions", numQuestions); // Pass the number of questions to the API request
+        for (let i = 0; i < fileInput.files.length; i++) {
+            formData.append("files[]", fileInput.files[i]);
+        }
 
-    // Check if the text is meaningful before generating questions
-    if (!isMeaningfulText(textInput.value) && fileInput.files.length === 0) {
-        alert("Please enter some meaningful text or upload a file.");
-        isGenerating = false; // Reset the flag
-        document.getElementById('loading-spinner').style.display = 'none'; // Hide the loading spinner
-        return;
-    }
+        // Check if the text is meaningful before generating questions
+        if (!isMeaningfulText(textInput.value) && fileInput.files.length === 0) {
+            alert("Please enter some meaningful text or upload a file.");
+            isGenerating = false; // Reset the flag
+            document.getElementById('loading-spinner').style.display = 'none'; // Hide the loading spinner
+            return;
+        }
 
-    fetch("/api/generate_quiz", {
-        method: "POST",
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Hide the loading spinner
-        document.getElementById('loading-spinner').style.display = 'none';
+        fetch("/api/generate_quiz", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Hide the loading spinner
+            document.getElementById('loading-spinner').style.display = 'none';
 
-        // Check if the API response contains questions_with_answers
-        if (data.questions_with_answers) {
-            // Clear previous output
-            outputDiv.innerHTML = "";
+            // Check if the API response contains questions_with_answers
+            if (data.questions_with_answers) {
+                // Clear previous output
+                outputDiv.innerHTML = "";
 
-            // Split the questions_with_answers into an array of questions
-            const questionsWithAnswers = data.questions_with_answers.split("\n");
+                // Split the questions_with_answers into an array of questions
+                const questionsWithAnswers = data.questions_with_answers.split("\n");
 
-            // Create a div to hold the questions
-            const questionsDiv = document.createElement("div");
+                // Create a div to hold the questions
+                const questionsDiv = document.createElement("div");
 
-            // Add each question to the div
-            questionsWithAnswers.forEach(question => {
-                const questionDiv = document.createElement("div");
-                questionDiv.classList.add("question");
-                questionDiv.innerHTML = question + "<br>"; // Add a break line after each question and answer pair
-                questionsDiv.appendChild(questionDiv);
-            });
+                // Add each question to the div
+                questionsWithAnswers.forEach(question => {
+                    const questionDiv = document.createElement("div");
+                    questionDiv.classList.add("question");
+                    questionDiv.innerHTML = question + "<br>"; // Add a break line after each question and answer pair
+                    questionsDiv.appendChild(questionDiv);
+                });
 
-            // Append the questions to the outputDiv
-            outputDiv.appendChild(questionsDiv);
-        } else if (data.error) {
-            // Clear previous output if there is an error
-            outputDiv.innerHTML = "";
+                // Append the questions to the outputDiv
+                outputDiv.appendChild(questionsDiv);
+                
+                // Show the copy button
+                document.querySelector('.bt-copy').style.display = 'block';
+            } else if (data.error) {
+                // Clear previous output if there is an error
+                outputDiv.innerHTML = "";
+
+                // Show error message
+                const errorDiv = document.createElement("div");
+                errorDiv.classList.add("message", "error-message");
+                errorDiv.innerHTML = "<p>Error: " + data.error + "</p>";
+                outputDiv.appendChild(errorDiv);
+            }
+
+            // Reset the flag after 5 seconds
+            setTimeout(() => {
+                isGenerating = false;
+            }, 5000);
+
+        })
+        .catch(error => {
+            // Hide the loading spinner on error
+            document.getElementById('loading-spinner').style.display = 'none';
 
             // Show error message
             const errorDiv = document.createElement("div");
             errorDiv.classList.add("message", "error-message");
-            errorDiv.innerHTML = "<p>Error: " + data.error + "</p>";
+            errorDiv.innerHTML = "<p>Error: Failed to generate questions and answers.</p>";
             outputDiv.appendChild(errorDiv);
-        }
 
-        // Reset the flag after 5 seconds
-        setTimeout(() => {
+            // Reset the flag
             isGenerating = false;
-        }, 5000);
+        });
+    }
 
-    })
-    .catch(error => {
-        // Hide the loading spinner on error
-        document.getElementById('loading-spinner').style.display = 'none';
-
-        // Show error message
-        const errorDiv = document.createElement("div");
-        errorDiv.classList.add("message", "error-message");
-        errorDiv.innerHTML = "<p>Error: Failed to generate questions and answers.</p>";
-        outputDiv.appendChild(errorDiv);
-
-        // Reset the flag
-        isGenerating = false;
-    });
-}
-
-const generateQuizBtn = document.querySelector("#generate-quiz-btn");
-generateQuizBtn.addEventListener("click", generateQuiz);
+    const generateQuizBtn = document.querySelector("#generate-quiz-btn");
+    generateQuizBtn.addEventListener("click", generateQuiz);
 
 </script>
 
