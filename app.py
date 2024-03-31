@@ -70,6 +70,10 @@ def generate_quiz():
     if text_input:
         combined_text += "\n" + text_input
 
+    # Check if combined_text is meaningful
+    if not is_meaningful_text(combined_text):
+        return jsonify({"error": "The input does not contain enough meaningful text. Please provide more information."})
+
     messages.append({"role": "user", "content": combined_text})
     messages.append({"role": "system", "content": f"Generate {quiz_type} quiz questions and answers for {num_questions} questions."})
 
