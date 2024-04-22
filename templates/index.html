@@ -180,11 +180,16 @@
 
 
     function removeFiles() {
-        const fileInput = document.querySelector("#file-input");
+    const fileInput = document.querySelector("#file-input");
+        if (fileInput.files.length === 0) {
+            alert("No file/s imported.");
+            return;
+        }
         fileInput.value = ""; // Clear the file input
         document.querySelector('.custom-file-label').textContent = "Choose file..."; // Reset the file input label
         document.getElementById('remove-files-btn').style.display = 'none'; // Hide the remove files button
     }
+
 
     function clearText() {
         document.querySelector("#text-input").value = ""; // Clear the text input
