@@ -42,6 +42,14 @@ def generate_quiz():
 
     num_questions = int(num_questions)
 
+    # Check if the total number of tokens exceeds the maximum limit
+    total_tokens = len(text_input.split()) if text_input else 0
+    for file in request.files.getlist("files[]"):
+        total_tokens += len(file.read().split())
+
+    if total_tokens > 16385:
+        return jsonify({"error": "You have exceeded the maximum token limit of 16385. Please reduce the amount of text or the number of files."})
+
     messages = [{"role": "system", "content": "You are a student."}]
     if text_input:
         if is_meaningful_text(text_input):
