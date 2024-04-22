@@ -40,7 +40,7 @@
             <img src="static/img/exam.png" alt="logo" class="logo-img">
             <span class="logo-text">EaseExam</span>
         </a>
-      
+
         <ul class="page">
             <li><a href="#home">Home</a></li>
             <li><a href="#generator">Generator</a></li>
@@ -51,7 +51,7 @@
     <section class="home">
         <a name="home"></a>
             <div class="content">
-                <img src="static/img/icon.png" alt="image" class="right-image"> 
+                <img src="static/img/icon.png" alt="image" class="right-image">
                 <h1>EaseExam</h1>
                     <p>EaseExam is a platform designed to simplify the
                         creation of exam questions from lecture materials. It
@@ -65,10 +65,10 @@
                         revolutionizing exam preparation.</p>
             </div>
     </section>
-    
+
     <a name="generator"></a>
     <section class="generator">
-       
+
         <div class="content-area">
             <div class="text-area-div">
                 <textarea class="text-area" id="text-input" type = "text" placeholder="Enter the text with all the information needed for the quiz or exam!"></textarea>
@@ -99,9 +99,9 @@
             </div>
             <br>
             <button class="bt-copy" onclick="copyToClipboard()">Copy Questions</button>
-        </div>       
+        </div>
     </section>
-    
+
     <section class="about">
         <a name = "about"></a>
         <h1>WE ARE ACIM</h1>
@@ -292,7 +292,7 @@
 
                 // Append the questions to the outputDiv
                 outputDiv.appendChild(questionsDiv);
-                
+
                 // Show the copy button
                 document.querySelector('.bt-copy').style.display = 'block';
             } else if (data.error) {
