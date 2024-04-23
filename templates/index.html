@@ -60,7 +60,7 @@
             </div>
 
             <div class="choose-file-div">
-                <input type="file" class="custom-file-input" id="file-input" multiple>
+                <input type="file" class="custom-file-input" id="file-input" multiple accept=".pdf,.docx">
                 <label class="custom-file-label" for="file-input">Choose file...</label>
                 <button type="button" class="bt-remove" id="remove-files-btn" onclick="removeFiles()">Remove File</button>
             </div>
@@ -216,6 +216,16 @@
             return;
         }
 
+        // Check if the file format is allowed
+        const fileInput = document.getElementById('file-input');
+        const allowedFormats = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        for (let i = 0; i < fileInput.files.length; i++) {
+            if (!allowedFormats.includes(fileInput.files[i].type)) {
+                alert("Only .pdf and .docx file formats are allowed.");
+                return;
+            }
+        }
+
         // Show the loading spinner
         document.getElementById('loading-spinner').style.display = 'block';
 
@@ -223,7 +233,6 @@
         isGenerating = true;
 
         const textInput = document.querySelector("#text-input");
-        const fileInput = document.querySelector("#file-input");
         const outputDiv = document.querySelector("#output");
         const numQuestions = document.getElementById('questions-content').value; // Get the number of questions
 
