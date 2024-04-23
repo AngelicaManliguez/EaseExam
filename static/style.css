@@ -13,7 +13,7 @@ body {
     color: white;
     background-image: linear-gradient(rgb(11, 95, 134), rgb(0, 179, 134));
   }
-  
+
 .home
 {
     height: 100vh;
@@ -150,9 +150,9 @@ body {
 }
 
 /* Made Changes - noy */
-.content-area 
+.content-area
 {
-    margin-top: 20%; 
+    margin-top: 20%;
     position: absolute;
 }
 
@@ -371,7 +371,7 @@ body {
     height: 400px;
     color: #000000;
     overflow-y: auto; /* Add this line to add a vertical scrollbar if the content exceeds the height */
-    overflow-x: auto; 
+    overflow-x: auto;
 }
 
 .bt-copy {
@@ -487,34 +487,34 @@ footer
     font-family: 'Roboto';
 }
 
-@media screen and (max-width: 375px) {
-    .navbar 
+@media screen and (max-width: 768px) {
+    .navbar
     {
-        padding: 5px; 
-    } 
+        padding: 5px;
+    }
 
-    .logo-text 
+    .logo-text
     {
         font-size: 20px;
     }
 
-    .logo-img 
+    .logo-img
     {
         margin-left: -15px;
-        width: 22px; 
+        width: 22px;
         height: auto;
-        border-radius: 4px; 
-        margin-top: -8px; 
+        border-radius: 4px;
+        margin-top: -8px;
     }
 
-    .page li 
+    .page li
     {
         margin-right: 10px;
     }
 
-    .page a 
+    .page a
     {
-        font-size: 10px; 
+        font-size: 10px;
         margin-left: -10px;
     }
 
@@ -547,25 +547,25 @@ footer
     .generator
     {
         height: 125vh;
-        margin-top: -20px; 
+        margin-top: -20px;
     }
 
-    .content-area 
+    .content-area
     {
-        width: 90%; 
-        margin-top: 250px; 
-        padding: 10px; 
+        width: 90%;
+        margin-top: 250px;
+        padding: 10px;
     }
 
     .text-area-div,
     .choose-file-div,
     .num-questions-div,
     .container-pic,
-    .output-div 
+    .output-div
     {
-        width: 112%; 
+        width: 112%;
         margin-left: -20px;
-        padding: 5px; 
+        padding: 5px;
         font-size: 10px;
     }
 
@@ -704,7 +704,7 @@ footer
         padding-right: 10px;
     }
 
-    .person img 
+    .person img
     {
         width: 70px;
         height: 70px;
@@ -712,7 +712,7 @@ footer
         margin-bottom: 10px;
     }
 
-    .person p 
+    .person p
     {
         font-size: 11px;
         margin: 0;
