@@ -246,6 +246,7 @@ body {
     top: 331px;
     left: 10px;
     right: 755px;
+    overflow: hidden;
 }
 
 .bt-choose
