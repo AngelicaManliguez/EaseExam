@@ -6,12 +6,14 @@
 <p style = "text-align: justify;"> EaseExam is a platform designed to simplify the creation of exam questions from lecture materials. It allows professors to upload files to generate questions based on key concepts and information. The platform also incorporates artificial intelligence technology, allowing users to interact with the system This allows professors to focus on teaching and facilitating learning experiences for their students, revolutionizing exam preparation.
 </p>
 
+<br>
 
-# EASE EXAM DEPLOYMENT
+## EASE EXAM DEPLOYMENT
 Link: [bit.ly/EaseExam](bit.ly/EaseExam)
 
+<br>
 
-# EASE EXAM WEBSITE PREVIEW
+## EASE EXAM WEBSITE PREVIEW
 
 ### Home Section
 
@@ -27,15 +29,29 @@ Link: [bit.ly/EaseExam](bit.ly/EaseExam)
 ![image](https://github.com/AeronRedCelajes/EaseExamGen/assets/142378544/93f43883-c229-4e51-bae3-dad44bbebd3d)
 
 
-# HOW TO USE EASE EXAM
+<br>
+
+## HOW TO USE EASE EXAM
 
 ![1](https://github.com/AeronRedCelajes/EaseExamGen/assets/142378544/4a99a381-253f-4a37-8365-58d34448dc8b)
 
 
 ![2](https://github.com/AeronRedCelajes/EaseExamGen/assets/142378544/1d0b0f1f-5ef8-49e1-b7dc-46ceb4b45d58)
 
+<br>
 
-# COLLABORATORS
+## MOBILE VIEW
+
+<p align="center">
+   <img src = "https://cdn.discordapp.com/attachments/885103849831030785/1232933352181596223/image.png?ex=662b4229&is=6629f0a9&hm=63c822b06df44fb7b4ffbad339c18392d82cac52b30dc9a4304dbd927566e581&">
+   <img src = "https://cdn.discordapp.com/attachments/885103849831030785/1232933364668043275/image.png?ex=662b422c&is=6629f0ac&hm=ea0fbfef300fe832c128758be957dfd497e9c1274ff3f32860dd0b99951f8681&">
+   <img src = "https://cdn.discordapp.com/attachments/885103849831030785/1232933378215379066/image.png?ex=662b4230&is=6629f0b0&hm=32c39eb53a1a17febc2901d9cafb01780d3751f0d42044c3c79eba427faed586&">
+</p>
+
+
+<br>
+
+## COLLABORATORS
 
 1. Achero, Noriel R. (github.com/NorielAchero) – Project Manager, Front-End Developer
 2. Celajes, Aeron Red. R. (github.com/AeronRedCelajes) – Back-End Developer
