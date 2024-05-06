@@ -6,7 +6,7 @@ import openai
 app = Flask(__name__)
 
 # Set your OpenAI API key
-openai.api_key = "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"
+openai.api_key = "API KEY"
 
 @app.route("/")
 def index():
@@ -86,8 +86,20 @@ def generate_quiz():
     if not is_meaningful_text(combined_text):
         return jsonify({"error": "The input does not contain enough meaningful text. Please provide more information."})
 
-    messages.append({"role": "user", "content": combined_text})
-    messages.append({"role": "system", "content": f"Generate {quiz_type} quiz questions and answers for {num_questions} questions."})
+    if quiz_type == "Multiple Choice":
+        messages.append({"role": "user", "content": combined_text})
+        messages.append({"role": "system", "content": f"Generate {quiz_type} quiz questions and answers for {num_questions} questions. With the format of: \nNumber. Question\n\nChoices\nChoices\nChoices\nChoices\n\nAnswer\n\nExplanation."})
+    elif quiz_type == "True or False":
+        messages.append({"role": "user", "content": combined_text})
+        messages.append({"role": "system", "content": f"Generate {quiz_type} quiz questions and answers for {num_questions} questions. With the format of: \nNumber. Question\n\nAnswer\n\nExplanation."})    
+    elif quiz_type == "Fill in the Blanks":
+        messages.append({"role": "user", "content": combined_text})
+        messages.append({"role": "system", "content": f"Generate {quiz_type} quiz questions and answers for {num_questions} questions. With the format of: \nNumber. Question\n\nAnswer\n\nExplanation. Note: Always put a blank in the question"})
+    elif quiz_type == "Identification":
+        messages.append({"role": "user", "content": combined_text})
+        messages.append({"role": "system", "content": f"Generate {quiz_type} quiz questions with terminology/noun short answers only for {num_questions} questions. With the format of: _______Description/Question\n\nAnswer. Note: Always put ____________ and the question number before the question"})
+    else:
+         return jsonify({"error": "No quiz type question..."})
 
     try:
         response = openai.ChatCompletion.create(

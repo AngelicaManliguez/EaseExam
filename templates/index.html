@@ -64,6 +64,8 @@
                 <input type="number" class="num-questions" id="questions-content" min="1" max="10" value="5" placeholder="Number of Questions (1-10)"></textarea>
                 <button type="button" class="bt-multiple" id="multiple-choice-btn" onclick="selectQuizType('Multiple Choice')">Multiple Choices</button>
                 <button type="button" class="bt-tf" id="true-false-btn" onclick="selectQuizType('True or False')">True or False</button>
+                <button type="button" class="bt-fill-blanks" id="fill-blanks-btn" onclick="selectQuizType('Fill in the Blanks')">Fill in the Blanks</button>
+                <button type="button" class="bt-identification" id="identification-btn" onclick="selectQuizType('Identification')">Identification</button>
             </div>
 
             <button type="button" class="bt-generate" id="generate-quiz-btn">Generate!</button>
@@ -178,13 +180,20 @@
         // Remove the class from all buttons
         document.getElementById('multiple-choice-btn').classList.remove('btn-selected');
         document.getElementById('true-false-btn').classList.remove('btn-selected');
+        document.getElementById('fill-blanks-btn').classList.remove('btn-selected'); 
+        document.getElementById('identification-btn').classList.remove('btn-selected'); // Add more for new buttons
 
         // Add the class to the selected button
         if (quizType === 'Multiple Choice') {
             document.getElementById('multiple-choice-btn').classList.add('btn-selected');
         } else if (quizType === 'True or False') {
             document.getElementById('true-false-btn').classList.add('btn-selected');
+        } else if (quizType === 'Fill in the Blanks') {
+            document.getElementById('fill-blanks-btn').classList.add('btn-selected'); // Add this block
+        } else if (quizType === 'Identification') {
+            document.getElementById('identification-btn').classList.add('btn-selected'); // Add this block
         }
+        
 
         document.getElementById('generate-quiz-btn').style.display = 'block';
         document.getElementById('generate-quiz-btn').setAttribute('data-quiz-type', quizType);
@@ -207,7 +216,7 @@
 
         // Check if quizType is not set
         if (!quizType) {
-            alert("Please select a quiz type (Multiple Choice or True or False) before generating.");
+            alert("Please select a quiz type (Multiple Choice, True or False, or Fill in the Blanks) before generating.");
             return;
         }
 
@@ -295,37 +304,27 @@
                 // Show error message
                 const errorDiv = document.createElement("div");
                 errorDiv.classList.add("message", "error-message");
-                errorDiv.innerHTML = "<p>Error: " + data.error + "</p>";
+                errorDiv.textContent = data.error;
                 outputDiv.appendChild(errorDiv);
+
+                // Hide the copy button
+                document.querySelector('.bt-copy').style.display = 'none';
             }
-
-            // Reset the flag after 5 seconds
-            setTimeout(() => {
-                isGenerating = false;
-            }, 5000);
-
-        })
-        .catch(error => {
-            // Hide the loading spinner on error
-            document.getElementById('loading-spinner').style.display = 'none';
-
-            // Show error message
-            const errorDiv = document.createElement("div");
-            errorDiv.classList.add("message", "error-message");
-            errorDiv.innerHTML = "<p>Error: Failed to generate questions and answers.</p>";
-            outputDiv.appendChild(errorDiv);
-
-            // Hide the copy button
-            document.querySelector('.bt-copy').style.display = 'none';
 
             // Reset the flag
             isGenerating = false;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred while generating questions. Please try again.");
+            // Reset the flag
+            isGenerating = false;
+            // Hide the loading spinner
+            document.getElementById('loading-spinner').style.display = 'none';
         });
     }
 
-    const generateQuizBtn = document.querySelector("#generate-quiz-btn");
-    generateQuizBtn.addEventListener("click", generateQuiz);
-
+    document.getElementById('generate-quiz-btn').addEventListener('click', generateQuiz);
 </script>
 
 </body>
