@@ -6,7 +6,7 @@ import openai
 app = Flask(__name__)
 
 # Set your OpenAI API key
-openai.api_key = "API KEY"
+openai.api_key = "OpenAI API Key"
 
 @app.route("/")
 def index():
