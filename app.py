@@ -23,8 +23,8 @@ def generate_questions_from_docx(docx_file):
         yield para.text
 
 def is_meaningful_text(text):
-    # Check if the text is too short or contains only non-alphanumeric characters
-    return text.strip() and len(text.strip()) > 10 and any(char.isalnum() for char in text)
+    # Check if the text contains only non-alphanumeric characters
+    return any(char.isalnum() for char in text)
 
 @app.route("/api/generate_quiz", methods=["POST"])
 def generate_quiz():
