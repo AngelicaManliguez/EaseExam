@@ -202,8 +202,8 @@
     let isGenerating = false; // Flag to track if a question is being generated
 
     function isMeaningfulText(text) {
-        // Check if the text is too short or contains only non-alphanumeric characters
-        return text.trim().length > 10 && /[a-zA-Z0-9]/.test(text);
+        // Check if the text contains only non-alphanumeric characters
+        return /[a-zA-Z0-9]/.test(text);
     }
 
     function generateQuiz() {
@@ -238,7 +238,7 @@
 
         const textInput = document.querySelector("#text-input");
         const outputDiv = document.querySelector("#output");
-        const numQuestions = document.getElementById('questions-content').value; // Get the number of questions
+        const numQuestions = document.getElementById('questions-content').value; // Get the number of questions in here
 
         // Validate the number of questions
         if (numQuestions < 1 || numQuestions > 10) {
